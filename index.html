@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkDus - Enlaces de Comunidades</title>
+    <title>LinkDus</title>
+    <meta name="description" content="Descubre y únete a comunidades en toDus. Tu plataforma para encontrar enlaces de comunidades verificadas.">
+    <meta name="keywords" content="toDus, comunidades, enlaces, Cuba, chat, grupos">
+    <meta name="author" content="LinkDus">
+    <meta name="robots" content="index, follow">
     <link rel="icon" type="image/jpg" href="https://github.com/ESTADUS/linkDus/raw/refs/heads/main/LinkDus.jpg">
     <style>
         :root {
@@ -27,6 +31,18 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
         
         header {
@@ -259,6 +275,20 @@
             opacity: 0.8;
         }
         
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+        
+        .footer-section a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
         .footer-bottom {
             text-align: center;
             margin-top: 1.5rem;
@@ -327,6 +357,14 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -336,7 +374,7 @@
                 <img src="https://github.com/ESTADUS/linkDus/raw/refs/heads/main/LinkDus.jpg" alt="LinkDus" class="logo-img">
                 <div>
                     <div class="logo-text">LinkDus</div>
-                    <div class="subtitle">Enlaces de comunidades en un solo lugar</div>
+                    <div class="subtitle">Enlaces De Comunidades</div>
                 </div>
             </div>
         </div>
@@ -345,8 +383,9 @@
     <div class="search-container">
         <div class="search-wrapper">
             <div class="search-box">
+                <label for="searchInput" class="sr-only">Buscar comunidades</label>
                 <input type="text" id="searchInput" placeholder="Buscar comunidades por nombre o URL...">
-                <button class="search-btn" id="searchButton">
+                <button class="search-btn" id="searchButton" aria-label="Buscar">
                     <span>Buscar</span>
                 </button>
             </div>
@@ -355,10 +394,10 @@
     
     <div class="links-container">
         <div class="stats-bar">
-            <div class="total-count" id="totalCount">Cargando...</div>
+            <div class="total-count" id="totalCount" aria-live="polite">Cargando...</div>
             <div class="sort-options">
-                <button class="sort-btn active" data-sort="name-asc">Nombre A-Z</button>
-                <button class="sort-btn" data-sort="name-desc">Nombre Z-A</button>
+                <button class="sort-btn active" data-sort="name-asc" aria-label="Ordenar por nombre ascendente">Nombre A-Z</button>
+                <button class="sort-btn" data-sort="name-desc" aria-label="Ordenar por nombre descendente">Nombre Z-A</button>
             </div>
         </div>
         
@@ -379,6 +418,15 @@
                 <p>• Enlaces verificados</p>
                 <p>• Actualizaciones regulares</p>
             </div>
+            
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <a href="https://chat.todus.cu/chat-profile/EstaDus1" target="_blank" rel="noopener">toDus: EstaDus1</a>
+                <a href="https://whatsapp.com/channel/0029Vb6scaWGpLHLC4pTNC3k" target="_blank" rel="noopener">WhatsApp Channel</a>
+                <a href="https://chat.todus.cu/@c7476ae0f93e48eaa0380a31a739660a" target="_blank" rel="noopener">toDus Channel</a>
+                <a href="https://www.facebook.com/profile.php?id=61583639575433" target="_blank" rel="noopener">Facebook</a>
+                <a href="https://x.com/EstaDus_Oficial?t=IHwJbyzOYSGz4wUtozOvZg&s=09" target="_blank" rel="noopener">X (Twitter)</a>
+            </div>
         </div>
         
         <div class="footer-bottom">
@@ -386,7 +434,7 @@
         </div>
     </footer>
 
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
 
     <script>
         const linksData = [
@@ -435,7 +483,9 @@
             { name: "La Isla", url: "https://chat.todus.cu/d7ec8b93713a4e17b56f5fff4c84b3dc" },
             { name: "La Habana", url: "https://chat.todus.cu/44153ef52cba4dab8d8083dbcc0fcc9a" },
             { name: "Camagüey", url: "https://chat.todus.cu/d5b53327f4025a00af478c7188672732" },
-            { name: "Las Tunas", url: "https://chat.todus.cu/9d3bade14fc65452b01cdebf25d347c5" }
+            { name: "Las Tunas", url: "https://chat.todus.cu/9d3bade14fc65452b01cdebf25d347c5" },
+            { name: "Sin reglas", url: "https://chat.todus.cu/c9442dc4601f4902ac3fd2b4c208df6b" },
+            { name: "#", url: "#" }
         ];
 
         class LinkDusApp {
@@ -444,6 +494,7 @@
                 this.filteredLinks = [...linksData];
                 this.currentSort = 'name-asc';
                 this.searchTerm = '';
+                this.debounceTimer = null;
                 this.init();
             }
             
@@ -455,6 +506,9 @@
             
             renderLinks() {
                 const linksGrid = document.getElementById('linksGrid');
+                
+                if (!linksGrid) return;
+                
                 linksGrid.innerHTML = '';
                 
                 if (this.filteredLinks.length === 0) {
@@ -468,29 +522,33 @@
                     return;
                 }
                 
+                const fragment = document.createDocumentFragment();
+                
                 this.filteredLinks.forEach(link => {
                     const card = document.createElement('div');
                     card.className = 'link-card';
                     
                     card.innerHTML = `
                         <div class="card-header">
-                            <div class="community-name" title="${link.name}">${link.name}</div>
+                            <div class="community-name" title="${this.escapeHtml(link.name)}">${this.escapeHtml(link.name)}</div>
                         </div>
                         <div class="card-body">
-                            <div class="link-url" title="${link.url}">${link.url}</div>
+                            <div class="link-url" title="${this.escapeHtml(link.url)}">${this.escapeHtml(link.url)}</div>
                             <div class="card-actions">
-                                <a href="${link.url}" target="_blank" class="btn btn-primary">
+                                <a href="${this.escapeHtml(link.url)}" target="_blank" rel="noopener" class="btn btn-primary">
                                     <span>Unirse</span>
                                 </a>
-                                <button class="btn btn-secondary copy-btn" data-url="${link.url}">
+                                <button class="btn btn-secondary copy-btn" data-url="${this.escapeHtml(link.url)}" aria-label="Copiar enlace de ${this.escapeHtml(link.name)}">
                                     <span>Copiar</span>
                                 </button>
                             </div>
                         </div>
                     `;
                     
-                    linksGrid.appendChild(card);
+                    fragment.appendChild(card);
                 });
+                
+                linksGrid.appendChild(fragment);
                 
                 document.querySelectorAll('.copy-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
@@ -500,15 +558,27 @@
                 });
             }
             
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
             filterAndSearch() {
-                this.filteredLinks = this.links.filter(link => {
-                    return link.name.toLowerCase().includes(this.searchTerm) || 
-                           link.url.toLowerCase().includes(this.searchTerm);
-                });
+                if (this.debounceTimer) {
+                    clearTimeout(this.debounceTimer);
+                }
                 
-                this.sortLinks();
-                this.renderLinks();
-                this.updateStats();
+                this.debounceTimer = setTimeout(() => {
+                    this.filteredLinks = this.links.filter(link => {
+                        return link.name.toLowerCase().includes(this.searchTerm) || 
+                               link.url.toLowerCase().includes(this.searchTerm);
+                    });
+                    
+                    this.sortLinks();
+                    this.renderLinks();
+                    this.updateStats();
+                }, 150);
             }
             
             sortLinks() {
@@ -545,6 +615,8 @@
             
             showToast(message) {
                 const toast = document.getElementById('toast');
+                if (!toast) return;
+                
                 toast.textContent = message;
                 toast.className = 'toast';
                 toast.classList.add('show');
@@ -556,6 +628,8 @@
             
             updateStats() {
                 const totalCount = document.getElementById('totalCount');
+                if (!totalCount) return;
+                
                 const totalLinks = this.filteredLinks.length;
                 
                 if (totalLinks === 0) {
@@ -568,14 +642,27 @@
             }
             
             setupEventListeners() {
-                document.getElementById('searchInput').addEventListener('input', (e) => {
-                    this.searchTerm = e.target.value.toLowerCase();
-                    this.filterAndSearch();
-                });
+                const searchInput = document.getElementById('searchInput');
+                const searchButton = document.getElementById('searchButton');
                 
-                document.getElementById('searchButton').addEventListener('click', () => {
-                    this.filterAndSearch();
-                });
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.searchTerm = e.target.value.toLowerCase();
+                        this.filterAndSearch();
+                    });
+                    
+                    searchInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.filterAndSearch();
+                        }
+                    });
+                }
+                
+                if (searchButton) {
+                    searchButton.addEventListener('click', () => {
+                        this.filterAndSearch();
+                    });
+                }
                 
                 document.querySelectorAll('.sort-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
@@ -586,18 +673,16 @@
                         this.renderLinks();
                     });
                 });
-                
-                document.getElementById('searchInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.filterAndSearch();
-                    }
-                });
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                new LinkDusApp();
+            });
+        } else {
             new LinkDusApp();
-        });
+        }
     </script>
 </body>
 </html>
