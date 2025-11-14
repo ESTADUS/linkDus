@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkDus - Enlaces de Comunidades</title>
+    <link rel="icon" type="image/jpg" href="https://github.com/ESTADUS/linkDus/raw/refs/heads/main/LinkDus.jpg">
+    <style>
+        :root {
+            --primary-red: #d32f2f;
+            --dark-red: #b71c1c;
+            --light-red: #ffcdd2;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+            --dark-gray: #424242;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-red);
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        
+        .search-container {
+            padding: 1.5rem;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--light-red);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .search-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        #searchInput {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-red);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.2);
+        }
+        
+        .search-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-red);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .search-btn:hover {
+            background-color: var(--dark-red);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--white);
+            border: 1px solid var(--light-red);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-red);
+            color: var(--white);
+            border-color: var(--primary-red);
+        }
+        
+        .filter-btn:hover:not(.active) {
+            background-color: var(--light-red);
+        }
+        
+        .links-container {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem 1rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .total-count {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+        
+        .sort-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .sort-btn {
+            padding: 0.4rem 0.8rem;
+            background-color: var(--white);
+            border: 1px solid var(--light-red);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .sort-btn.active {
+            background-color: var(--primary-red);
+            color: var(--white);
+            border-color: var(--primary-red);
+        }
+        
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .link-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: var(--white);
+            padding: 1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .community-name {
+            font-size: 1.1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .members-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .card-body {
+            padding: 1.2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .link-url {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            word-break: break-all;
+            margin-bottom: 1.2rem;
+            flex: 1;
+            font-family: monospace;
+            background-color: var(--gray);
+            padding: 0.8rem;
+            border-radius: 4px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-red);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-red);
+        }
+        
+        .btn-secondary {
+            background-color: var(--gray);
+            color: var(--dark-gray);
+            border: 1px solid var(--light-red);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light-red);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--light-red);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--dark-gray) 0%, #2c2c2c 100%);
+            color: var(--white);
+            padding: 2rem 1rem;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-section p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .social-link:hover {
+            background-color: var(--primary-red);
+            transform: translateY(-3px);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            background-color: #4CAF50;
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+        
+        @media (max-width: 768px) {
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .sort-options {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .sort-btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card-actions {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo-img">LD</div>
+                <div>
+                    <div class="logo-text">LinkDus</div>
+                    <div class="subtitle">Enlaces de comunidades en un solo lugar</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="search-container">
+        <div class="search-wrapper">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar comunidades por nombre o URL...">
+                <button class="search-btn" id="searchButton">
+                    <span>Buscar</span>
+                </button>
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="large">Grandes (200+)</button>
+                <button class="filter-btn" data-filter="medium">Medianos (100-199)</button>
+                <button class="filter-btn" data-filter="small">Pequeños (<100)</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="links-container">
+        <div class="stats-bar">
+            <div class="total-count" id="totalCount">Cargando...</div>
+            <div class="sort-options">
+                <button class="sort-btn active" data-sort="name-asc">Nombre A-Z</button>
+                <button class="sort-btn" data-sort="name-desc">Nombre Z-A</button>
+                <button class="sort-btn" data-sort="members-desc">Más miembros</button>
+                <button class="sort-btn" data-sort="members-asc">Menos miembros</button>
+            </div>
+        </div>
+        
+        <div class="links-grid" id="linksGrid">
+            <!-- Los enlaces se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>LinkDus</h3>
+                <p>Tu plataforma centralizada para descubrir y unirte a comunidades en toDus.</p>
+                <p>Conectamos personas con intereses comunes.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Características</h3>
+                <p>• Búsqueda inteligente</p>
+                <p>• Filtrado por tamaño</p>
+                <p>• Enlaces verificados</p>
+                <p>• Actualizaciones regulares</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>¿Tienes una comunidad para agregar?</p>
+                <p>Envíanos la información a través de nuestro formulario de contacto.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">F</a>
+                    <a href="#" class="social-link">T</a>
+                    <a href="#" class="social-link">I</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>LinkDus &copy; 2023 - Todos los enlaces son proporcionados por la comunidad</p>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Datos de los enlaces
+        const linksData = [
+            { name: "Comunidad LGBT", url: "https://chat.todus.cu/808b93da075e5921a56133f09f6633cc", members: 290 },
+            { name: "KPOP CUBA", url: "https://chat.todus.cu/37f353ef32c74819907a6268485fc1d0", members: 215 },
+            { name: "Anime Cuba", url: "https://chat.todus.cu/8c18e9e316705ca2b4a96f803882d562", members: 216 },
+            { name: "Bad Bunny Fans", url: "https://chat.todus.cu/ba833858593359adb1cc7c72fcab66bf", members: 282 },
+            { name: "Área Social", url: "https://chat.todus.cu/83902c44f1fd503e944457b19496d818", members: 213 },
+            { name: "Hentai XXX", url: "https://chat.todus.cu/33f70bae2ac25abf918b25e85297504a", members: 167 },
+            { name: "OTAKUS", url: "https://chat.todus.cu/4d567124474452bdaa6b3b4d4f497d73", members: 101 },
+            { name: "La Isla De Juventud", url: "https://chat.todus.cu/7af150ff40c75c889078865438e18dba", members: 123 },
+            { name: "CoD MOBILE", url: "https://chat.todus.cu/89080190ce585037ac5b4a518a942172", members: 64 },
+            { name: "Los Mejores Amigos", url: "https://chat.todus.cu/890f88dc0e92537789cfcb5409478b8f", members: 227 },
+            { name: "Cartel TV Premium", url: "https://chat.todus.cu/@c421bec350804bb48a6577b580902951", members: 23 },
+            { name: "Sojolo Lite", url: "https://chat.todus.cu/@335e78580d3e4565904aa2c53c4aaf29", members: 25 },
+            { name: "Army Forever", url: "https://chat.todus.cu/97a35435cee6565a90ffb58a01334252", members: 269 },
+            { name: "Ciencia y Misterio", url: "https://chat.todus.cu/9a72256efaef56e591046090aba7bf64", members: 98 },
+            { name: "Enlaces del toDus", url: "https://chat.todus.cu/9e367c261e1459ff8cf7c4d49150c431", members: 279 },
+            { name: "A Otro Con Ese Cuento", url: "https://chat.todus.cu/a41d24988b005257858fc8011bf59fbd", members: 162 },
+            { name: "Roll", url: "https://chat.todus.cu/f8444350a59f53fb9166f37dded39988", members: 357 },
+            { name: "Cuba City", url: "https://chat.todus.cu/376f99a8f3aa52eb82824f105bdfa182", members: 357 },
+            { name: "Un grupo", url: "https://chat.todus.cu/934622c6678d568e9899c864fc5730f1", members: 356 },
+            { name: "Comunistas", url: "https://chat.todus.cu/0eea599aeff25443876214ab1f1e390b", members: 357 },
+            { name: "Urban Flow", url: "https://chat.todus.cu/5329ecc14bb3589e8ca1a1013216928c", members: 107 },
+            { name: "Sport News Es", url: "https://chat.todus.cu/0104d43650d75ffbbfae2169fb3ba03e", members: 99 },
+            { name: "Pa rato", url: "https://chat.todus.cu/de11ea46405f5a29bee1ec106dd296ae", members: 82 },
+            { name: "Fans de ghost", url: "https://chat.todus.cu/d28f3dc01bee59bf9ecf6e1e74444311", members: 38 },
+            { name: "Suban pellejaldo", url: "https://chat.todus.cu/46147c1e785c5d86850ac3a4fb9ccb59", members: 357 },
+            { name: "Porno 24/7", url: "https://chat.todus.cu/1602a847b53f5f66909001ed10d0aa93", members: 357 },
+            { name: "XXX", url: "https://chat.todus.cu/182fe928ca15510aa2a974551c217c8a", members: 357 },
+            { name: "ONLY FANS", url: "https://chat.todus.cu/7bc11810fe9a5d8084e99f9966656873", members: 357 },
+            { name: "Que rico", url: "https://chat.todus.cu/2f1b65151b68593aba53572c8ed15ff0", members: 342 },
+            { name: "La hermandad", url: "https://chat.todus.cu/b25bfbf292cc49fb8b46559c5df14fb4", members: 60 },
+            { name: "TODUS", url: "https://chat.todus.cu/a8ee7ecaafd140bfa5ee94cf56c92208", members: 103 },
+            { name: "Canal De Links", url: "https://chat.todus.cu/@e41ab1894eb74128b2f715cdb220ebfa", members: 82 },
+            { name: "Wuara Media", url: "https://chat.todus.cu/aba53d855cb5415db70e27e1736d0ea7", members: 337 },
+            { name: "SHOTING", url: "https://chat.todus.cu/3f987bed9347448f8a6266560e3033ab", members: 5 },
+            { name: "ENCUENTRA TU SINTONÍA", url: "https://chat.todus.cu/68c52788e1364c518eca7aedb62aef9c", members: 157 },
+            { name: "CALL OF DUTY X CUBA", url: "https://chat.todus.cu/5db5dc1efb6e46d08bd8109ddca4e352", members: 50 },
+            { name: "PORNO PAJA EMPELLA", url: "https://chat.todus.cu/8efd60dd48e74c8d832cf228f20b1ebd", members: 140 },
+            { name: "Eben Ezer", url: "https://chat.todus.cu/@1663cd294c374b6a9afde158076a3d09", members: 13 },
+            { name: "Comunidad LGBT 2", url: "https://chat.todus.cu/0aabad8e740e4c56bd7cc3e9d5028b14", members: 4 },
+            { name: "DeltaChat Link", url: "https://chat.todus.cu/760da9c45c174a509716f53f2a392eac", members: 357 },
+            { name: "Reggae Vibe", url: "https://chat.todus.cu/33ef18e8ab624ee2b9e8d9076ef93b0c", members: 35 },
+            { name: "Cupido", url: "https://chat.todus.cu/5e8d29cd8cb44d1b8c83dd602cf13183", members: 278 },
+            { name: "La Isla", url: "https://chat.todus.cu/d7ec8b93713a4e17b56f5fff4c84b3dc", members: 44 },
+            { name: "La Habana", url: "https://chat.todus.cu/44153ef52cba4dab8d8083dbcc0fcc9a", members: 27 },
+            { name: "Camagüey", url: "https://chat.todus.cu/d5b53327f4025a00af478c7188672732", members: 109 },
+            { name: "Las Tunas", url: "https://chat.todus.cu/9d3bade14fc65452b01cdebf25d347c5", members: 81 }
+        ];
+
+        // Clase para gestionar el estado de la aplicación
+        class LinkDusApp {
+            constructor() {
+                this.links = [...linksData];
+                this.filteredLinks = [...linksData];
+                this.currentFilter = 'all';
+                this.currentSort = 'name-asc';
+                this.searchTerm = '';
+                this.init();
+            }
+            
+            init() {
+                this.renderLinks();
+                this.setupEventListeners();
+                this.updateStats();
+            }
+            
+            // Función para renderizar los enlaces
+            renderLinks() {
+                const linksGrid = document.getElementById('linksGrid');
+                linksGrid.innerHTML = '';
+                
+                if (this.filteredLinks.length === 0) {
+                    linksGrid.innerHTML = `
+                        <div class="no-results">
+                            <div class="no-results-icon">🔍</div>
+                            <h3>No se encontraron comunidades</h3>
+                            <p>Intenta con otros términos de búsqueda o ajusta los filtros</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                this.filteredLinks.forEach(link => {
+                    const card = document.createElement('div');
+                    card.className = 'link-card';
+                    
+                    // Determinar el tamaño del grupo
+                    let sizeClass = '';
+                    if (link.members >= 200) {
+                        sizeClass = 'large';
+                    } else if (link.members >= 100) {
+                        sizeClass = 'medium';
+                    } else {
+                        sizeClass = 'small';
+                    }
+                    
+                    card.setAttribute('data-size', sizeClass);
+                    
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="community-name" title="${link.name}">${link.name}</div>
+                            <div class="members-badge">
+                                <span>👥</span>
+                                <span>${link.members}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="link-url" title="${link.url}">${link.url}</div>
+                            <div class="card-actions">
+                                <a href="${link.url}" target="_blank" class="btn btn-primary">
+                                    <span>Unirse</span>
+                                </a>
+                                <button class="btn btn-secondary copy-btn" data-url="${link.url}">
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    linksGrid.appendChild(card);
+                });
+                
+                // Agregar event listeners a los botones de copiar
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const url = e.currentTarget.getAttribute('data-url');
+                        this.copyToClipboard(url);
+                    });
+                });
+            }
+            
+            // Función para filtrar y buscar
+            filterAndSearch() {
+                this.filteredLinks = this.links.filter(link => {
+                    const matchesSearch = link.name.toLowerCase().includes(this.searchTerm) || 
+                                         link.url.toLowerCase().includes(this.searchTerm);
+                    
+                    let matchesFilter = true;
+                    if (this.currentFilter !== 'all') {
+                        if (this.currentFilter === 'large') {
+                            matchesFilter = link.members >= 200;
+                        } else if (this.currentFilter === 'medium') {
+                            matchesFilter = link.members >= 100 && link.members < 200;
+                        } else if (this.currentFilter === 'small') {
+                            matchesFilter = link.members < 100;
+                        }
+                    }
+                    
+                    return matchesSearch && matchesFilter;
+                });
+                
+                this.sortLinks();
+                this.renderLinks();
+                this.updateStats();
+            }
+            
+            // Función para ordenar los enlaces
+            sortLinks() {
+                switch(this.currentSort) {
+                    case 'name-asc':
+                        this.filteredLinks.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'name-desc':
+                        this.filteredLinks.sort((a, b) => b.name.localeCompare(a.name));
+                        break;
+                    case 'members-desc':
+                        this.filteredLinks.sort((a, b) => b.members - a.members);
+                        break;
+                    case 'members-asc':
+                        this.filteredLinks.sort((a, b) => a.members - b.members);
+                        break;
+                }
+            }
+            
+            // Función para copiar al portapapeles
+            copyToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    // Método moderno
+                    navigator.clipboard.writeText(text)
+                        .then(() => this.showToast('Enlace copiado al portapapeles', 'success'))
+                        .catch(() => this.showToast('Error al copiar el enlace', 'error'));
+                } else {
+                    // Método alternativo para navegadores más antiguos
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        this.showToast('Enlace copiado al portapapeles', 'success');
+                    } catch (err) {
+                        this.showToast('Error al copiar el enlace', 'error');
+                    }
+                    
+                    document.body.removeChild(textArea);
+                }
+            }
+            
+            // Función para mostrar notificaciones toast
+            showToast(message, type = '') {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast';
+                
+                if (type) {
+                    toast.classList.add(type);
+                }
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Función para actualizar estadísticas
+            updateStats() {
+                const totalCount = document.getElementById('totalCount');
+                const totalLinks = this.filteredLinks.length;
+                
+                if (totalLinks === 0) {
+                    totalCount.textContent = 'No se encontraron comunidades';
+                } else if (totalLinks === 1) {
+                    totalCount.textContent = '1 comunidad encontrada';
+                } else {
+                    totalCount.textContent = `${totalLinks} comunidades encontradas`;
+                }
+            }
+            
+            // Configurar event listeners
+            setupEventListeners() {
+                // Búsqueda
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.searchTerm = e.target.value.toLowerCase();
+                    this.filterAndSearch();
+                });
+                
+                document.getElementById('searchButton').addEventListener('click', () => {
+                    this.filterAndSearch();
+                });
+                
+                // Filtros
+                document.querySelectorAll('.filter-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        this.currentFilter = e.currentTarget.getAttribute('data-filter');
+                        this.filterAndSearch();
+                    });
+                });
+                
+                // Ordenamiento
+                document.querySelectorAll('.sort-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        this.currentSort = e.currentTarget.getAttribute('data-sort');
+                        this.sortLinks();
+                        this.renderLinks();
+                    });
+                });
+                
+                // Permitir búsqueda con Enter
+                document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.filterAndSearch();
+                    }
+                });
+            }
+        }
+
+        // Inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            new LinkDusApp();
+        });
+    </script>
+</body>
+</html>
